@@ -4,6 +4,7 @@ import { Server } from 'socket.io';
 
 import { handler } from '../build/handler.js';
 
+const hostname = '0.0.0.0'
 const port = 3000;
 const app = express();
 const server = createServer(app);
@@ -17,4 +18,4 @@ io.on('connection', (socket) => {
 });
 
 app.use(handler);
-server.listen(port);
+server.listen(port, hostname);
