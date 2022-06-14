@@ -3,9 +3,10 @@
 	import Close from 'svelte-material-icons/Close.svelte';
 	import Play from 'svelte-material-icons/Play.svelte';
 	import { io } from 'socket.io-client';
+	import { onMount } from 'svelte';
 	const socket = io();
 
-	let searchEmbed = '';
+	let searchYoutubeVideo = '';
 	$: currentEmbed = '';
 	$: embedList = [
 		// {
@@ -25,7 +26,16 @@
 		// }
 	];
 
+	onMount(()=>{
+		window.addEventListener('keypress',(event)=>{
+			if(event.keyCode===13){
+				emitMusic();
+			}
+		});
+	});
+	
 	const emitMusic = () => {
+		let searchEmbed = searchYoutubeVideo.split("=")[1].split("&")[0];
 		let vidurl = 'http://www.youtube.com/watch?v=' + searchEmbed;
 		fetch(`http://noembed.com/embed?dataType=json&url=${vidurl}`)
 			.then((res) => res.json())
@@ -36,6 +46,7 @@
 					thumbnail: data.thumbnail_url
 				});
 			});
+		searchYoutubeVideo = '';
 	};
 
 	socket.on('setMusic', (data) => {
@@ -71,10 +82,10 @@
 
 <div class="mt-10 flex flex-col w-full">
 	<input
-		bind:value={searchEmbed}
+		bind:value={searchYoutubeVideo}
 		name="music"
 		id="inputMusic"
-		placeholder="Youtube Key link"
+		placeholder="Youtube video link"
 		class="text-center h-8"
 	/>
 	<button
